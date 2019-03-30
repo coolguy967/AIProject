@@ -1,0 +1,92 @@
+{% extends 'layout.html'%}
+
+{% block body%}
+<div class="wrapper" style="display: flex; width: 100%;">
+    <nav class="sidebar bg-light" style="width: 17%;">
+        <form method="post">
+           {{ form.hidden_tag() }}
+            <div class="container-fluid">
+                <h6>University:</h6>
+                {{ form.university }}
+            </div>
+            <div class="container-fluid">
+                <h6>Room Type:</h6>
+                {{ form.room }}
+            </div>
+            <div class="container-fluid">
+                <h6>Washroom:</h6>
+                {{ form.washroom }}
+            </div>
+            <div class="container-fluid">
+                <h6>Maximum Size(sq. ft):</h6>
+                <input type="range" class="slider" min="110" max="240" name="size" id="size" data-show-value="true"/>
+                <p><strong>Size:</strong> <span id="size_value"></span> </p>
+                <script>
+                    var slider = document.getElementById("size");
+                    var output = document.getElementById("size_value");
+                    output.innerHTML = slider.value;
+
+                    slider.oninput = function() {
+                      output.innerHTML = this.value;
+                    }
+                </script>
+            </div>
+            <div class="container-fluid">
+                <h6>Maximum Price:</h6>
+                <input type="range" class="slider" min="300" max="700" name="price" id="price" data-show-value="true"/>
+                <p><strong>Price:</strong> <span id="value"></span> </p>
+                <script>
+                    var slider2 = document.getElementById("price");
+                    var output2 = document.getElementById("value");
+                    output2.innerHTML = slider2.value;
+
+                    slider2.oninput = function() {
+                      output2.innerHTML = this.value;
+                    }
+                </script>
+            </div>
+            <div class="container-fluid">
+                <h6>Other Options:</h6>
+                {{ form.parking }}
+                {{ form.parking.label }}
+            </div>
+            <br>
+            <div class="container-fluid">
+                <input type="submit">
+            </div>
+        </form>
+    </nav>
+
+    <div id="content" style="width: 73%">
+        <h3>Search Results:</h3>
+        <br>
+        <div style="width: 100%; display: table;">
+            {% for record in results %}
+                <div style="width: 100%; display: table-row;">
+                    <div style="width: 20%; display: table-cell;">
+                        <p><strong>Listing ID:</strong> {{ record[0] }}</p>
+
+                        {% if record[1]=="F-SW" or record[1]=="F-SHW" %}
+                            <p><strong>Furnishing:</strong> Furnished</p>
+                        {% elif record[1]=="UF-SW" or record[1]=="UF-SHW" %}
+                            <p><strong>Furnishing:</strong> Unfurnished</p>
+                        {% endif %}
+
+                    </div>
+                    <div style="width: 20%; display: table-cell;">
+                        <p><strong>Size(sq. ft):</strong> {{ record[2] }}</p>
+                        <p><strong>Washroom:</strong> {{ record[3] }}</p>
+                    </div>
+                    <div style="width: 60%; display: table-cell;">
+                        <p><strong>Price:</strong> ${{ record[5] }}/month</p>
+                        <p><strong>Address:</strong> {{ record[6] }}</p>
+                    </div>
+                    <div style="display: table-cell;"></div>
+                </div>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
