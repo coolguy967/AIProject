@@ -9,7 +9,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dev'
 
 db = DBConnection.Database()
-cursor = db.cursor
 
 
 @app.route('/', methods=['get', 'post'])

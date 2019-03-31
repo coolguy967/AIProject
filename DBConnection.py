@@ -13,10 +13,6 @@ class Database:
               ["Sawmill Valley Drive", "Snow Bunting Court", "Kingbird Court", "Belvedere Crescent", "Stonemason Crescent"],
               ["Dalhousie Crescent", "Niagra Drive", "McGill Court", "Secretariat Place", "Woodbine Place"]]
 
-    db = MySQLdb.connect("localhost", "root", "", "listings")
-
-    cursor = db.cursor()
-
     def __init__(self):
 
         db = MySQLdb.connect("localhost", "root", "", "listings")
@@ -155,10 +151,14 @@ class Database:
         for record in temp:
             nodes.append(list(record))
 
+        db.close()
+
         return tuple(nodes)
 
     def breadthFirst(self, uni_id, room, washroom, parking, price):
-        cursor = self.db.cursor()
+        db = MySQLdb.connect("localhost", "root", "", "listings")
+
+        cursor = db.cursor()
 
         cursor.execute("SELECT listing_id, room_type, sqft, washroom, parking, price, address FROM listings WHERE uni_id=" + uni_id + ";")
         goal = cursor.fetchall()
@@ -176,18 +176,21 @@ class Database:
         nodes = cursor.fetchall()
 
         if nodes == goal:
+            db.close()
             return nodes
 
         cursor.execute("SELECT * FROM listing INNER JOIN university WHERE listing.uni_id = university.uni_id AND university.uni_id=2;")
         nodes = cursor.fetchall()
 
         if nodes == goal:
+            db.close()
             return nodes
 
         cursor.execute("SELECT * FROM listing INNER JOIN university WHERE listing.uni_id = university.uni_id AND university.uni_id=3;")
         nodes = cursor.fetchall()
 
         if nodes == goal:
+            db.close()
             return nodes
 
     def getPreferred(self):
@@ -198,6 +201,7 @@ class Database:
         cursor.execute("SELECT * FROM preferred;")
         preferred = cursor.fetchall()
 
+        db.close()
         return preferred
 
     def setPreferred(self, room_type, sqft, washroom, parking, price):
@@ -208,21 +212,32 @@ class Database:
         cursor.execute("SELECT * FROM preferred;")
         preferred = cursor.fetchall()
 
+        print("test")
+
         if len(preferred) > 0:
-            cursor.execute("CREATE TABLE preferred_new LIKE preferred;"
-                           "RENAME TABLE preferred TO preferred_old, preferred_new TO preferred;"
-                           "DROP TABLE preferred_old;")
+            cursor.execute("CREATE TABLE preferred_new LIKE preferred;")
+            print("test")
+            cursor.execute("RENAME TABLE preferred TO preferred_old, preferred_new TO preferred;")
+            print("test")
+            cursor.execute("DROP TABLE preferred_old;")
+
+        print("test")
 
         cursor.execute("INSERT INTO preferred VALUES ('" + room_type + "', " + str(sqft) + ", '" + washroom + "', '" + parking + "', " + str(price) + ");")
 
+        db.close()
+
     def preferredListings(self):
-        cursor = self.db.cursor()
+        db = MySQLdb.connect("localhost", "root", "", "listings")
+
+        cursor = db.cursor()
 
         preferred = self.getPreferred()
 
         cursor.execute("SELECT * from listings WHERE room_type=" + preferred[0] + " AND (sqft*1.1)>=" + str(preferred[1]) + " AND (sqft*0.9)<=" + preferred[1] + " AND washroom=" + preferred[2] + " AND parking=" + preferred[3] + " AND (price*1.1)>=" + preferred[4] + " AND (price*0.9)<=" + str(preferred[4]) + ";")
         preferred_listings = cursor.fetchall()
 
+        db.close()
         return preferred_listings
 
     def getListings(self, university, room, washroom, parking, price, size):
@@ -316,15 +331,20 @@ class Database:
             history.pop()
 
             for record in history:
-                record[0] -= 1
+                list(record)[0] -= 1
 
             search_history.insert(0, 30)
 
             history.append(tuple(search_history))
 
-            cursor.execute("CREATE TABLE history_new LIKE history;"
-                           "RENAME TABLE history TO history_old, history_new TO history;"
-                           "DROP TABLE history_old;")
+            print("test2")
+
+            cursor.execute("CREATE TABLE history_new LIKE history;")
+            print("test2")
+            cursor.execute("RENAME TABLE history TO history_old, history_new TO history;")
+            print("test2")
+            cursor.execute("DROP TABLE history_old;")
+            print("test2")
 
             for record in history:
                 cursor.execute("INSERT INTO history VALUES (" + str(record[0]) + ", '" + record[1] + "', " + str(record[2]) + ", '" + record[3] + "', '" + record[4] + "', " + str(record[5]) + ");")
@@ -338,9 +358,14 @@ class Database:
             search_history.insert(0, index)
             history.append(tuple(search_history))
 
-            cursor.execute("CREATE TABLE history_new LIKE history;"
-                           "RENAME TABLE history TO history_old, history_new TO history;"
-                           "DROP TABLE history_old;")
+            print("test3")
+
+            cursor.execute("CREATE TABLE history_new LIKE history;")
+            print("test3")
+            cursor.execute("RENAME TABLE history TO history_old, history_new TO history;")
+            print("test3")
+            cursor.execute("DROP TABLE history_old;")
+            print("test3")
 
             for record in history:
                 cursor.execute("INSERT INTO history VALUES (" + str(record[0]) + ", '" + record[1] + "', " + str(record[2]) + ", '" + record[3] + "', '" + record[4] + "', " + str(record[5]) + ");")
@@ -368,7 +393,7 @@ class Database:
         preferred_price = int(cursor.fetchone()[0])
         print(preferred_price)
 
+        db.close()
         self.setPreferred(preferred_roomtype, preferred_sqft, preferred_washroom, preferred_parking, preferred_price)
         return result
 
-    db.close()
