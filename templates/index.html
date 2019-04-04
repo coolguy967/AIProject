@@ -60,15 +60,17 @@
     <div id="content" style="width: 73%">
         <h3 class="ml-4 mt-4">Search Results:</h3>
         <br>
-            {% for record in results %}
-                <table class="ml-5" style="width: 100%; display: table;">
-                    <tr style="width: 100%; display: table-row;">
-                        <td class="pl-3 pt-3" style="width: 20%; display: table-cell;" colspan="3">
+
+        {% if results|length > 0 %}
+            {% for record in listing %}
+                <table class="ml-5 shadow" style="width: 100%; display: table;">
+                    <tr>
+                        <td class="pl-3 pt-3" colspan="3">
                             <h4 style="font-family: Helvetica;">{{ record[6] }}</h4>
                         </td>
                     </tr>
-                    <tr class="shadow" style="width: 100%; display: table-row;">
-                        <td class="pl-3 pt-3" style="width: 20%; display: table-cell;">
+                    <tr>
+                        <td class="pl-3 pt-3">
                             <p><strong>Listing ID:</strong> {{ record[0] }}</p>
 
                             {% if record[1]=="F-SW" or record[1]=="F-SHW" %}
@@ -78,17 +80,79 @@
                             {% endif %}
 
                         </td>
-                        <td style="width: 20%; display: table-cell;">
+                        <td>
                             <p><strong>Size(sq. ft):</strong> {{ record[2] }}</p>
                             <p><strong>Washroom:</strong> {{ record[3] }}</p>
                         </td>
-                        <td style="width: 60%; display: table-cell;">
+                        <td>
+                            <h4 style="color: rgb(235, 104, 0);">Preferred</h4>
                             <p><strong>Price:</strong> ${{ record[5] }}/month</p>
                         </td>
                     </tr>
                 </table>
                 <br>
             {% endfor %}
+            {% for record in results %}
+                <table class="ml-5 shadow" style="width: 100%; display: table;">
+                    <tr>
+                        <td class="pl-3 pt-3" colspan="3">
+                            <h4 style="font-family: Helvetica;">{{ record[6] }}</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pl-3 pt-3">
+                            <p><strong>Listing ID:</strong> {{ record[0] }}</p>
+
+                            {% if record[1]=="F-SW" or record[1]=="F-SHW" %}
+                                <p><strong>Furnishing:</strong> Furnished</p>
+                            {% elif record[1]=="UF-SW" or record[1]=="UF-SHW" %}
+                                <p><strong>Furnishing:</strong> Unfurnished</p>
+                            {% endif %}
+
+                        </td>
+                        <td>
+                            <p><strong>Size(sq. ft):</strong> {{ record[2] }}</p>
+                            <p><strong>Washroom:</strong> {{ record[3] }}</p>
+                        </td>
+                        <td>
+                            <p><strong>Price:</strong> ${{ record[5] }}/month</p>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+            {% endfor %}
+        {% else %}
+            {% for record in listings %}
+                <table class="ml-5 shadow" style="width: 100%; display: table;">
+                    <tr>
+                        <td class="pl-3 pt-3" colspan="3">
+                            <h4 style="font-family: Helvetica;">{{ record[6] }}</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pl-3 pt-3">
+                            <p><strong>Listing ID:</strong> {{ record[0] }}</p>
+
+                            {% if record[1]=="F-SW" or record[1]=="F-SHW" %}
+                                <p><strong>Furnishing:</strong> Furnished</p>
+                            {% elif record[1]=="UF-SW" or record[1]=="UF-SHW" %}
+                                <p><strong>Furnishing:</strong> Unfurnished</p>
+                            {% endif %}
+
+                        </td>
+                        <td>
+                            <p><strong>Size(sq. ft):</strong> {{ record[2] }}</p>
+                            <p><strong>Washroom:</strong> {{ record[3] }}</p>
+                        </td>
+                        <td>
+                            <h4 style="color: rgb(235, 104, 0);">Preferred</h4>
+                            <p><strong>Price:</strong> ${{ record[5] }}/month</p>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
 

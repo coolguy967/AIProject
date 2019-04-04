@@ -31,14 +31,16 @@ def homepage():
 
         result = db.getListings(university, room, washroom, parking, price, size)
 
-        print(result)
+        preferred_list = db.preferredListings(university)
 
-        return render_template('index.html', form=form, results=result)
+        return render_template('index.html', form=form, results=result, listing=preferred_list)
 
     else:
         print(form.errors)
 
-    return render_template('index.html', form=form)
+    preferred_listings = db.preferredListings()
+
+    return render_template('index.html', form=form, listings=preferred_listings)
 
 
 if __name__ == '__main__':
